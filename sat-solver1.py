@@ -9,13 +9,17 @@ def simplify(prob):
             else:
                 variables[abs(k)] = False
             formula.remove(formula[i])
-            for cl in formula:
-                if k in cl:
-                    formula.remove(cl)
-                elif -k in cl:
-                    cl.remove(-k)
+            copy_formula = formula
+            j=0
+            while j<len(formula):
+                if k in formula[j]:
+                    formula.remove(formula[j])
+                    j=0
+                elif -k in formula[j]:
+                    formula[j].remove(-k)
+                    j+=1
                 else:
-                    pass
+                    j+=1
             i=0
         else:
             i+=1
