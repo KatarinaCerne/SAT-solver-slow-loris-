@@ -1,3 +1,26 @@
+def simplify(prob):
+    formula , variables = prob
+    i=0
+    while i<len(formula):
+        if  len(formula[i])==1:
+            k=formula[i][0] 
+            if k > 0:
+                variables[abs(k)] = True
+            else:
+                variables[abs(k)] = False
+            formula.remove(formula[i])
+            for cl in formula:
+                if k in cl:
+                    formula.remove(cl)
+                elif -k in cl:
+                    cl.remove(-k)
+                else:
+                    pass
+            i=0
+        else:
+            i+=1
+    return formula, variables
+
 def readDimacs(file):
     formula = []
     file = open(file,"r")
