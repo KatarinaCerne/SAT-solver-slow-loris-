@@ -25,6 +25,29 @@ def simplify(prob):
             i+=1
     return formula, variables
 
+def solveSAT(prob):
+    prob = simplify(prob)
+    formula, variables = prob
+    if formula == []:
+        return True, variables
+    elif [] in formula:
+        return False, variables
+    else:
+        for p, r in variables.items():
+            if r == None:
+                copy_form = formula[:]
+                copy_var = dict(variables)
+                copy_form.append([p])
+                sat, var = solveSAT((copy_form, copy_var))
+                if sat:
+                    return sat, var
+                else:
+                    copy_form = formula[:]
+                    copy_var = dict(variables)
+                    copy_form.append([-p])
+                    sat, var = solveSAT((copy_form, copy_var))
+                    return sat, var
+
 def readDimacs(file):
     formula = []
     file = open(file,"r")
