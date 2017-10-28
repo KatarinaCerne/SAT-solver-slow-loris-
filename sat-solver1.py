@@ -1,5 +1,11 @@
+import sys
+
+input_doc = sys.argv[1]
+output_doc = sys.argv[2]
+
+
 def simplify(prob):
-    formula , variables = prob
+    formula, variables = prob
     i=0
     while i<len(formula):
         if  len(formula[i])==1:
@@ -66,4 +72,19 @@ def readDimacs(file):
                 formula.append(line[:-1])
     file.close()
     return formula, variables
+
+
+def main(input_file, output_file):
+    sat, var = solveSAT(readDimacs(input_file))
+
+    file = open(output_file,"w")
+    if sat:
+        file.write(str(var))
+    else:
+        file.write("0")
+    file.close()
+    
+    return "Koncano"
+
+print(main(input_doc, output_doc))
                 
