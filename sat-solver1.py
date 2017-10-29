@@ -1,7 +1,12 @@
 import sys
+import ast
 
 input_doc = sys.argv[1]
 output_doc = sys.argv[2]
+
+solution_doc = None
+if len(sys.argv) == 4:
+    solution_doc = sys.argv[3] # podana kot slovar!
 
 
 def simplify(prob):
@@ -15,7 +20,7 @@ def simplify(prob):
             else:
                 variables[abs(k)] = False
             formula.remove(formula[i])
-            copy_formula = formula
+            # copy_formula = formula
             j=0
             while j<len(formula):
                 if k in formula[j]:
@@ -73,8 +78,24 @@ def readDimacs(file):
     file.close()
     return formula, variables
 
+def checkSolution(output_file, solution_file):
+    if solution_file == None:
+        return "Resitev ni podana"
 
-def main(input_file, output_file):
+    output_file = open(output_file, "r")
+    solution_file = open(solution_file, "r")
+
+    output = output_file.readline()
+    solution = solution_file.readline()
+    
+    output_file.close()
+    solution_file.close()
+
+    if ast.literal_eval(output) == ast.literal_eval(solution):
+        return "Resitev je OK"
+    return "Resitev ni OK"
+
+def main(input_file, output_file, solution_file):
     sat, var = solveSAT(readDimacs(input_file))
 
     file = open(output_file,"w")
@@ -83,9 +104,11 @@ def main(input_file, output_file):
     else:
         file.write("0")
     file.close()
+
+    s = checkSolution(output_file, solution_file)
     
-    return "Finished"
+    return "Finished \n " + s
 
 
-print(main(input_doc, output_doc))
+print(main(input_doc, output_doc, solution_doc))
                 
