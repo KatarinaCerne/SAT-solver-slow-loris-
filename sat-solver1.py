@@ -108,7 +108,7 @@ def main(input_file, output_file, solution_file):
 
     s = checkSolution(output_file, solution_file)
     
-    return "Finished \n " + s
+    return "Finished \n" + s
 
 
 print(main(input_doc, output_doc, solution_doc))
