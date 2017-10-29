@@ -1,12 +1,10 @@
 import sys
 import ast
 
+from boolean import *
+
 input_doc = sys.argv[1]
 output_doc = sys.argv[2]
-
-solution_doc = None
-if len(sys.argv) == 4:
-    solution_doc = sys.argv[3] # podana kot slovar!
 
 
 def simplify(prob):
@@ -78,38 +76,33 @@ def readDimacs(file):
     file.close()
     return formula, variables
 
-def checkSolution(output_file, solution_file):
-    if solution_file == None:
-        return "Resitev ni podana"
-
-    output_file = open(output_file, "r")
-    solution_file = open(solution_file, "r")
-
-    output = output_file.readline()
-    solution = solution_file.readline()
-    
-    output_file.close()
-    solution_file.close()
-
-    if ast.literal_eval(output) == ast.literal_eval(solution):
-        return "Resitev je OK"
-    return "Resitev ni OK"
+def checkOutput(formula, solution):
+    conj = []
+    for dis in formula:
+        for i in range(0, len(dis)):
+            if dis[i] < 0:
+                dis[i] = Not(abs(dis[i]))
+        conj.append(Or(dis))
+    cnf = And(*conj)
+    return cnf.evaluate(solution)
 
 
-def main(input_file, output_file, solution_file):
-    sat, var = solveSAT(readDimacs(input_file))
+def main(input_file, output_file):
+    formula, variables = readDimacs(input_file)
+    formula_copy = formula[:]
+    sat, var = solveSAT((formula, variables))
 
     file = open(output_file,"w")
     if sat:
         file.write(str(var)) # prav format?
+        s = checkOutput(formula_copy, var)
+        
     else:
         file.write("0")
     file.close()
 
-    s = checkSolution(output_file, solution_file)
+    return "Finished \n" + str(s)
     
-    return "Finished \n" + s
 
-
-print(main(input_doc, output_doc, solution_doc))
+print(main(input_doc, output_doc))
                 
