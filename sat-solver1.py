@@ -95,6 +95,7 @@ def checkSolution(output_file, solution_file):
         return "Resitev je OK"
     return "Resitev ni OK"
 
+
 def main(input_file, output_file, solution_file):
     sat, var = solveSAT(readDimacs(input_file))
 
