@@ -6,3 +6,4 @@
 *.out
 *.snm
 __pycache__/
+*.pyc
