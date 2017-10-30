@@ -90,6 +90,7 @@ def checkOutput(formula, solution):
 def main(input_file, output_file):
     formula, variables = readDimacs(input_file)
     formula_copy = formula[:]
+    formula = list(set(formula))
     sat, var = solveSAT((formula, variables))
 
     file = open(output_file,"w")
