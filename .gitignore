@@ -5,3 +5,4 @@
 *.nav
 *.out
 *.snm
+__pycache__/
