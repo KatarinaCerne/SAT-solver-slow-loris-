@@ -1,10 +1,12 @@
 import sys
 import ast
+import time
+from collections import Counter
 
 from boolean import *
 
-input_doc = sys.argv[1]
-output_doc = sys.argv[2]
+#input_doc = sys.argv[1]
+#output_doc = sys.argv[2]
 
 
 def simplify(prob):
@@ -35,6 +37,36 @@ def simplify(prob):
     return formula, variables
 
 def solveSAT(prob):
+    prob = simplify(prob)
+    formula, variables = prob
+    if formula == []:
+        return True, variables
+    elif [] in formula:
+        return False, variables
+    else:
+        #kljuci = [k for k, v in variables.items() if v == None]
+        #pojavitve = [0]*len(kljuci)
+        flat_formula = [abs(item) for sublist in formula for item in sublist]
+        pojavitve = Counter(flat_formula)
+        #for k in kljuci:
+        #    pojavitve[k] = flat_formula.count(k)
+        print(pojavitve)
+        p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
+        #for p, r in variables.items():
+        copy_form = formula[:]
+        copy_var = dict(variables)
+        copy_form.append([p])
+        sat, var = solveSAT((copy_form, copy_var))
+        if sat:
+            return sat, var
+        else:
+            copy_form = formula[:]
+            copy_var = dict(variables)
+            copy_form.append([-p])
+            sat, var = solveSAT((copy_form, copy_var))
+            return sat, var
+
+def solveSAT_slaba(prob):
     prob = simplify(prob)
     formula, variables = prob
     if formula == []:
@@ -88,9 +120,10 @@ def checkOutput(formula, solution):
 
 
 def main(input_file, output_file):
+    start_time = time.time()
     formula, variables = readDimacs(input_file)
     formula_copy = formula[:]
-    formula = list(set(formula))
+    #formula = list(set(formula))
     sat, var = solveSAT((formula, variables))
 
     file = open(output_file,"w")
@@ -101,9 +134,8 @@ def main(input_file, output_file):
     else:
         file.write("0")
     file.close()
-
-    return "Finished \n" + str(s)
+    return "Finished \n" + str(s) + str(time.time()-start_time)
     
 
-print(main(input_doc, output_doc))
+#print(main(input_doc, output_doc))
                 
