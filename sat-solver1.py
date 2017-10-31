@@ -50,9 +50,31 @@ def solveSAT(prob):
         pojavitve = Counter(flat_formula)
         #for k in kljuci:
         #    pojavitve[k] = flat_formula.count(k)
-        print(pojavitve)
+        #print(pojavitve)
         p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
-        #for p, r in variables.items():
+##        p = random.choice(random.choice(formula))
+
+#še ena hevristika, ki ne izboljša 
+##        pojavitve = dict()
+##        binarni = 0
+##        for cl in formula:
+##            if len(cl)==2:
+##                binarni+=1
+##                for var in cl:
+##                    if var<0:
+##                        pojavitve[-var]=[pojavitve.get(-var,[0,0])[0],pojavitve.get(-var,[0,0])[1]+1]
+##                    else:
+##                        pojavitve[var]=[pojavitve.get(var,[0,0])[0]+1,pojavitve.get(var,[0,0])[1]]
+##        if binarni >0:
+##            maks = 0
+##            for k, v in pojavitve.items():
+##                if 1024*v[0]*v[1]+v[0]+v[1] > maks:
+##                    p = k
+##        else:
+##            p = random.choice(random.choice(formula))
+            
+            
+        
         copy_form = formula[:]
         copy_var = dict(variables)
         copy_form.append([p])
@@ -79,14 +101,14 @@ def solveSAT_slaba(prob):
                 copy_form = formula[:]
                 copy_var = dict(variables)
                 copy_form.append([p])
-                sat, var = solveSAT((copy_form, copy_var))
+                sat, var = solveSAT_slaba((copy_form, copy_var))
                 if sat:
                     return sat, var
                 else:
                     copy_form = formula[:]
                     copy_var = dict(variables)
                     copy_form.append([-p])
-                    sat, var = solveSAT((copy_form, copy_var))
+                    sat, var = solveSAT_slaba((copy_form, copy_var))
                     return sat, var
 
 def readDimacs(file):
@@ -133,6 +155,7 @@ def main(input_file, output_file):
         
     else:
         file.write("0")
+        s = ""
     file.close()
     return "Finished \n" + str(s) + str(time.time()-start_time)
     
