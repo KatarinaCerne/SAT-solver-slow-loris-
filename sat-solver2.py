@@ -82,7 +82,8 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
            return a
         else:
             p = p - 1
-        i = dl[p][1]
+        el = dl[p][1]
+        i = formula.index(el)
         m = m - 1
         
 def findY(dl, a):
@@ -124,6 +125,7 @@ def solveSAT(prob):
         if y == 0:
             return False, variables
         a = derivingConflictImplicates(formula, variables, dl, false_clause_exa)
+        print(a)
         formula.append(a)
         if len(a) == 1:
             y2 = 0
