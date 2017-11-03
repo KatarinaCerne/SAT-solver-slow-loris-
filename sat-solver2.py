@@ -42,7 +42,7 @@ def bcp(prob):
 def checkFalseClause(formula, variables):
     for el in formula:
         clause = []
-        for i in clause:
+        for i in el:#?? el namesto clause
             if i < 0:
                 clause.append(not variables[abs(i)])
             else:
@@ -78,23 +78,24 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
             p = p - 1
             v = dl[p][0]
         if m == 1:
-           a.append(-dl[p])
+           a.append(-dl[p][0])#?? [0]
            return a
         else:
             p = p - 1
-        el = dl[p][1]
+        print(p, len(dl))
+        el = dl[p][1] #?? out of range??
         i = formula.index(el)
         m = m - 1
         
 def findY(dl, a):
     for j in range(len(dl)-1):
         for k in a:
-            if k in dl[j][0]:
+            if k in dl[j][1]:#?? [1] namesto [0]
                 return j
     return 0
 
 def unassignVariables(dl, variables, y2):
-    new_dl = dl[:y2] + dl[-1]
+    new_dl = dl[:y2] + [dl[-1]] #?? to mora biti seznam 
     for i in range(y2, len(dl) - 1):
         variables[dl[i][0]] = None
     return new_dl, variables
@@ -120,7 +121,7 @@ def solveSAT(prob):
             y += 1
             p = free_variables[0]
             variables[p] = True
-            dl.append((p, None))
+            dl.append((p, [])) #?? [] namesto None
             continue
         if y == 0:
             return False, variables
