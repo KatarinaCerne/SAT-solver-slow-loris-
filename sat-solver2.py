@@ -62,19 +62,19 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
     v = dl[-1][0]
     y = len(dl) - 1
     U = [False] * len(variables.keys())
-    U[dl[0][0]-1] = True
+    U[abs(dl[0][0])-1] = True #?? abs
     while True:
         for literal in formula[i]:
             v = literal
-            if not U[v-1]:
-                U[v-1] = True
+            if not U[abs(v)-1]: #??abs
+                U[abs(v)-1] = True #??abs
                 dl_help = [x[0] for x in dl]
                 if v in dl_help and dl_help.index(v) < y:
                     a.append(literal)
                 else:
                     m += 1
         v = dl[p][0]
-        while not U[v-1]:
+        while not U[abs(v)-1]: #??abs
             p = p - 1
             v = dl[p][0]
         if m == 1:
