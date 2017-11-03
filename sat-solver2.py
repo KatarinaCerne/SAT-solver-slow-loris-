@@ -42,12 +42,13 @@ def bcp(prob):
 def checkFalseClause(formula, variables):
     for el in formula:
         clause = []
-        for i in clause:
+        for i in el:
             if i < 0:
                 clause.append(not variables[abs(i)])
             else:
                 clause.append(variables[abs(i)])
         occ = Counter(clause)
+        #print(clause)
         false_occ = occ.get(False, 0)
         if false_occ == len(el):
             return True, el
@@ -62,10 +63,10 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
     v = dl[-1][0]
     y = len(dl) - 1
     U = [False] * len(variables.keys())
-    U[dl[0][0]-1] = True
+    U[abs(dl[0][0])-1] = True # dl = [(1, xx    )]
     while True:
         for literal in formula[i]:
-            v = literal
+            v = abs(literal)
             if not U[v-1]:
                 U[v-1] = True
                 dl_help = [x[0] for x in dl]
@@ -73,28 +74,30 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
                     a.append(literal)
                 else:
                     m += 1
-        v = dl[p][0]
+        v = abs(dl[p][0])
         while not U[v-1]:
             p = p - 1
-            v = dl[p][0]
+            v = abs(dl[p][0])
         if m == 1:
-           a.append(-dl[p])
+           a.append(-dl[p][0])
            return a
         else:
             p = p - 1
-        el = dl[p][1]
-        i = formula.index(el)
+        print(p)
         m = m - 1
+        el = dl[p+1][1]
+        i = formula.index(el)
+        
         
 def findY(dl, a):
     for j in range(len(dl)-1):
         for k in a:
-            if k in dl[j][0]:
+            if k == abs(dl[j][0]):
                 return j
     return 0
 
 def unassignVariables(dl, variables, y2):
-    new_dl = dl[:y2] + dl[-1]
+    new_dl = dl[:y2] + [dl[-1]]
     for i in range(y2, len(dl) - 1):
         variables[dl[i][0]] = None
     return new_dl, variables
@@ -114,24 +117,21 @@ def solveSAT(prob):
         if false_clause:
             if y == 0:
                 return False, variables
+            a = derivingConflictImplicates(formula, variables, dl, false_clause_exa)
+            formula.append(a)
+            if len(a) == 1:
+                y2 = 0
+            else:
+                y2 = findY(dl, a)
+            dl, variables = unassignVariables(dl, variables, y2)
         else:
             if len(free_variables) == 0:
                 return True, variables
             y += 1
             p = free_variables[0]
             variables[p] = True
-            dl.append((p, None))
+            #dl.append((p, None))
             continue
-        if y == 0:
-            return False, variables
-        a = derivingConflictImplicates(formula, variables, dl, false_clause_exa)
-        print(a)
-        formula.append(a)
-        if len(a) == 1:
-            y2 = 0
-        else:
-            y2 = findY(dl, a)
-        dl, variables = unassignVariables(dl, variables, y2)
     return True, variables
                         
     
