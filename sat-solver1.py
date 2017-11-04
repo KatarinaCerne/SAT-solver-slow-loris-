@@ -43,8 +43,13 @@ def simplify(prob):
     return prob
 
 def solveSAT(prob):
-    formula_old = []    
+    formula_old = []
+    i = 0
     while True:
+        i += 1
+        if i > 10000000:
+            return False, variables
+        
         prob = simplify(prob)
         formula, variables = prob
         formula_old = formula
@@ -98,6 +103,16 @@ def checkOutput(formula, solution):
     cnf = And(*conj)
     return cnf.evaluate(solution)
 
+def formatOutput(slovar):
+    formatted_output = ""
+    print(slovar)
+    for k, v in slovar.items():
+        if v:
+            formatted_output += str(k) + " "
+        else:
+            formatted_output += str(-k) + " "
+    return formatted_output
+
 
 def main(input_file, output_file):
     start_time = time.time()
@@ -107,7 +122,8 @@ def main(input_file, output_file):
 
     file = open(output_file,"w")
     if sat:
-        file.write(str(var)) # prav format?
+        formatted_output = formatOutput(var)
+        file.write(str(formatted_output)) # prav format?
         s = checkOutput(formula_copy, var)
         
     else:

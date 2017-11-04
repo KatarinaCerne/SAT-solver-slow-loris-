@@ -1,4 +1,4 @@
 # SAT SOLVER #
 
-Domača naloga v okviru predmeta Logika v računalništvu.
+Repository contains files from Logic in computer science homework.
 
