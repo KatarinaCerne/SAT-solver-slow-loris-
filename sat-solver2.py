@@ -89,11 +89,6 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_list):
            return a
         else:
             p = p - 1
-<<<<<<< HEAD
-        el = dl[p][1] #?? out of range??
-        i = formula.index(el)
-=======
->>>>>>> 4106e6dc36006fa18292d393aef0d9748d428a51
         m = m - 1
         el = dl[p][1]
         while (el not in false_clause_list) and (p > 0):
@@ -114,11 +109,7 @@ def findY(dl, a):
 def unassignVariables(dl, variables, y2):
     new_dl = dl[:y2] + [dl[-1]] 
     for i in range(y2, len(dl) - 1):
-<<<<<<< HEAD
-        variables[abs(dl[i][0])] = None #?? abs
-=======
         variables[abs(dl[i][0])] = None
->>>>>>> 4106e6dc36006fa18292d393aef0d9748d428a51
     return new_dl, variables
                         
 def solveSAT(prob):
