@@ -40,22 +40,28 @@ def graphColouring2SATdimacs(G, k, file):
     for i in range(len(G)):
         conj.append(Or(*((i, j) for j in range(k))))
         clauses.append([slovar[(i, j)] for j in range(k)])
+        #print(Or(*((i, j) for j in range(k))), [slovar[(i, j)] for j in range(k)])
         for j in range(k):
             for jj in range(j+1, k):
                 conj.append(Or(Not((i, j)), Not((i, jj))))
-                clauses.append([-slovar[(i, j)], -slovar[(i, jj)]])
+                if [-slovar[(i, jj)], -slovar[(i, j)]] not in clauses:
+                    clauses.append([-slovar[(i, j)], -slovar[(i, jj)]])
+                #print(Or(Not((i, j)), Not((i, jj))), [-slovar[(i, j)], -slovar[(i, jj)]])
         for h in G[i]:
             for j in range(k):
                 conj.append(Or(Not((h, j)), Not((i, j))))
-                clauses.append([-slovar[(h, j)], -slovar[(i, j)]])
+                if [-slovar[(i, j)], -slovar[(h, j)]] not in clauses:
+                    clauses.append([-slovar[(h, j)], -slovar[(i, j)]])
+                #print(Or(Not((h, j)), Not((i, j))), [-slovar[(h, j)], -slovar[(i, j)]])
     s = "p cnf " + str(a-1) + " " + str(len(clauses)) + "\n"
+    #cl_s = list(clauses)
     for el in clauses:
         s += " ".join(map(str, el))
         s += " 0 \n"
     file = open(file, "w")
     file.write(s)
     file.close()
-    return And(*conj)
+    #return And(*conj)
 
 def sodoku2SATdimacs(N, con, file):
     conj = []
