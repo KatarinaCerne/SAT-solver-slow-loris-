@@ -9,35 +9,77 @@ from boolean import *
 #output_doc = sys.argv[2]
 
 
-def simplify(prob):
+def findUnit(prob):
     formula, variables = prob
-    i=0
-    while i<len(formula):
-        if  len(formula[i])==1:
-            k=formula[i][0] 
-            if k > 0:
-                variables[abs(k)] = True
-            else:
-                variables[abs(k)] = False
-            formula.remove(formula[i])
-            # copy_formula = formula
-            j=0
-            while j<len(formula):
-                if k in formula[j]:
-                    formula.remove(formula[j])
-                    j=0
-                elif -k in formula[j]:
-                    formula[j].remove(-k)
-                    j+=1
-                else:
-                    j+=1
-            i=0
+    unit_clauses = []
+    for clause in formula:
+        if len(clause) == 1:
+            k=clause[0]
+            unit_clauses.append(k)
+##            if k > 0:
+##                variables[abs(k)] = True
+##            else:
+##                variables[abs(k)] = False
+    return unit_clauses
+
+def simplify_by_unit(prob, var):
+    formula, variables = prob
+    c_form = []
+    for clause in formula:
+        if var in clause:
+            pass
+        elif -var in clause:
+            clause.remove(-var)
+            c_form.append(clause)
         else:
-            i+=1
-    return formula, variables
+            c_form.append(clause)
+    return c_form, variables
+
+def simplify(prob):
+    units = findUnit(prob)
+    while len(units) > 0:
+        var = units.pop()
+        prob = simplify_by_unit(prob, var)
+        formula, variables = prob
+        if var > 0:
+            variables[abs(var)] = True
+        else:
+            variables[abs(var)] = False 
+        units = findUnit((formula, variables))
+        prob = formula, variables
+    return prob
+
+##def simplify(prob):
+##    formula, variables = prob
+##    i=0
+##    while i<len(formula):
+##        if  len(formula[i])==1:
+##            k=formula[i][0] 
+##            if k > 0:
+##                variables[abs(k)] = True
+##            else:
+##                variables[abs(k)] = False
+##            formula.remove(formula[i])
+##            j=0
+##            while j<len(formula):
+##                if k in formula[j]:
+##                    formula.remove(formula[j])
+##                    j=0
+##                elif -k in formula[j]:
+##                    formula[j].remove(-k)
+##                    j+=1
+##                else:
+##                    j+=1
+##            i=0
+##        else:
+##            i+=1
+##    return formula, variables
 
 def solveSAT(prob):
     prob = simplify(prob)
+
+ 
+
     formula, variables = prob
     if formula == []:
         return True, variables
