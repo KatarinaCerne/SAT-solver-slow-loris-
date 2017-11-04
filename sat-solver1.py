@@ -54,7 +54,7 @@ def solveSAT(prob):
         p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
 ##        p = random.choice(random.choice(formula))
 
-#še ena hevristika, ki ne izboljša 
+##še ena hevristika, ki ne izboljša 
 ##        pojavitve = dict()
 ##        binarni = 0
 ##        for cl in formula:
@@ -72,7 +72,16 @@ def solveSAT(prob):
 ##                    p = k
 ##        else:
 ##            p = random.choice(random.choice(formula))
-            
+
+##        pojavitve = dict()
+##        izbr_cl = min(formula, key=len)
+##        for clause in formula:
+##            for var in clause:
+##                pojavitve[abs(var)] = pojavitve.get(abs(var),0)+1
+##        v = list(pojavitve.values())
+##        k = list(pojavitve.keys())
+##        p = k[v.index(max(v))]
+##            
             
         
         copy_form = formula[:]

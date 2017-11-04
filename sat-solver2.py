@@ -82,7 +82,6 @@ def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
            return a
         else:
             p = p - 1
-        print(p, len(dl))
         el = dl[p][1] #?? out of range??
         i = formula.index(el)
         m = m - 1
@@ -97,7 +96,7 @@ def findY(dl, a):
 def unassignVariables(dl, variables, y2):
     new_dl = dl[:y2] + [dl[-1]] #?? to mora biti seznam 
     for i in range(y2, len(dl) - 1):
-        variables[dl[i][0]] = None
+        variables[abs(dl[i][0])] = None #?? abs
     return new_dl, variables
                         
 def solveSAT(prob):
