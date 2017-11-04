@@ -37,37 +37,37 @@ def simplify(prob):
         var = units.pop()
         prob = simplify_by_unit(prob, var)
         formula, variables = prob
-        if var > 0:
-            variables[abs(var)] = True
-        else:
-            variables[abs(var)] = False 
+        variables[abs(var)] = var > 0
         units = findUnit((formula, variables))
         prob = formula, variables
     return prob
 
 def solveSAT(prob):
-    prob = simplify(prob)
-    formula, variables = prob
-    if formula == []:
-        return True, variables
-    elif [] in formula:
-        return False, variables
-    else:
-        flat_formula = [abs(item) for sublist in formula for item in sublist]
-        pojavitve = Counter(flat_formula)
-        p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
-        copy_form = formula[:]
-        copy_var = dict(variables)
-        copy_form.append([p])
-        sat, var = solveSAT((copy_form, copy_var))
-        if sat:
-            return sat, var
-        else:
-            copy_form = formula[:]
+    formula_old = []    
+    while True:
+        prob = simplify(prob)
+        formula, variables = prob
+        formula_old = formula
+        if formula == []:
+            return True, variables
+        elif [] in formula and len(formula) == 1:
+            return False, variables
+        elif [] in formula:
+            sat, var = False, variables
+            copy_form = formula_old[:]
             copy_var = dict(variables)
             copy_form.append([-p])
-            sat, var = solveSAT((copy_form, copy_var))
-            return sat, var
+            prob = (copy_form, copy_var)
+            continue
+        else:
+            flat_formula = [abs(item) for sublist in formula for item in sublist]
+            pojavitve = Counter(flat_formula)
+            p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
+            copy_form = formula[:]
+            copy_var = dict(variables)
+            formula_old = copy_form[:]
+            copy_form.append([p])
+            prob = (copy_form, copy_var)
 
 def readDimacs(file):
     formula = []

@@ -20,6 +20,13 @@ def solutionToDict(input_file, output_file):
     output_file.write(str(dictionary))
     output_file.close()
 
+def polniGraf(n):
+    G = [[] for k in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if j != i:
+                G[i].append(j)
+    return G
 
 def graphColouring2SATdimacs(G, k, file): 
     conj = []
