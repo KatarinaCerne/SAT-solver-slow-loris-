@@ -7,6 +7,6 @@ Repository contains files of Logic in computer science homework.
 2. There are two ways of running the code:
 
 	* Run file [sat-solver1.py](sat-solver1.py) and call function `main("InputFile.txt","OutputFile.txt")`.
-	* It can be run from command line; `pytyon "InputFile.txt" "OutputFile.txt"`.
+	* It can be run from command line; `pytyon sat-solver1.py "InputFile.txt" "OutputFile.txt"`.
 
 
