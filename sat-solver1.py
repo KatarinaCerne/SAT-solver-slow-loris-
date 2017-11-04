@@ -5,8 +5,11 @@ from collections import Counter
 
 from boolean import *
 
-#input_doc = sys.argv[1]
-#output_doc = sys.argv[2]
+command_line = False
+if len(sys.argv) == 3:
+    input_doc = sys.argv[1]
+    output_doc = sys.argv[2]
+    command_line = True
 
 
 def findUnit(prob):
@@ -105,7 +108,6 @@ def checkOutput(formula, solution):
 
 def formatOutput(slovar):
     formatted_output = ""
-    print(slovar)
     for k, v in slovar.items():
         if v:
             formatted_output += str(k) + " "
@@ -123,15 +125,14 @@ def main(input_file, output_file):
     file = open(output_file,"w")
     if sat:
         formatted_output = formatOutput(var)
-        file.write(str(formatted_output)) # prav format?
-        s = checkOutput(formula_copy, var)
-        
+        file.write(str(formatted_output)) 
+        s = checkOutput(formula_copy, var) 
     else:
         file.write("0")
         s = ""
     file.close()
-    return "Finished \n" + str(s) + str(time.time()-start_time)
+    return "Finished " + str(s) + " " + str(time.time()-start_time)
     
-
-#print(main(input_doc, output_doc))
+if command_line:
+    print(main(input_doc, output_doc))
                 
