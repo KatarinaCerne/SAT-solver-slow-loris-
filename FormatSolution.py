@@ -103,7 +103,8 @@ def sodoku2SATdimacs(N, con, file):
 
     conj = conj + con
     for c in con:
-        clauses.append([slovar[c]])
+        (x, y, z) = c
+        clauses.append([slovar[(x-1, y-1, z-1)]])
     
     s = "p cnf " + str(a-1) + " " + str(len(clauses)) + "\n"
     for el in clauses:
