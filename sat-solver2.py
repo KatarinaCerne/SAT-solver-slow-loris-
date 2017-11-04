@@ -2,6 +2,7 @@ import sys
 import ast
 import time
 from collections import Counter
+from random import uniform
 
 from boolean import *
 
@@ -36,10 +37,11 @@ def bcp(prob):
                 variables[abs(keys[0])] = False
             else:
                 variables[abs(keys[0])] = True
-            new_true.append((keys[0], el))
+            new_true.append((a, el))
     return variables, new_true
 
 def checkFalseClause(formula, variables):
+    false_clauses = []
     for el in formula:
         clause = []
         for i in el:
@@ -48,44 +50,52 @@ def checkFalseClause(formula, variables):
             else:
                 clause.append(variables[abs(i)])
         occ = Counter(clause)
-        #print(clause)
         false_occ = occ.get(False, 0)
         if false_occ == len(el):
-            return True, el
+            false_clauses.append(el)
+    if len(false_clauses) != 0:
+        return True, false_clauses
     return False, None
     
 
-def derivingConflictImplicates(formula, variables, dl, false_clause_exa):
+def derivingConflictImplicates(formula, variables, dl, false_clause_list):
     a = []
-    i = formula.index(false_clause_exa)
+    i = formula.index(false_clause_list[0])
     m = 0
     p = len(dl) - 1
     v = dl[-1][0]
     y = len(dl) - 1
-    U = [False] * len(variables.keys())
-    U[abs(dl[0][0])-1] = True # dl = [(1, xx    )]
+    U = [False] * len(dl)
+    U[0] = True
+    dl_help = [x[0] for x in dl]
     while True:
-        for literal in formula[i]:
-            v = abs(literal)
-            if not U[v-1]:
-                U[v-1] = True
-                dl_help = [x[0] for x in dl]
-                if v in dl_help and dl_help.index(v) < y:
+        for literal in formula[i]: # notri sami false-i => literal > 0 => v dl_help je -literal? 
+            v = -(literal)
+            i_v = dl_help.index(v)
+            if not U[i_v]: 
+                U[i_v] = True 
+                if i_v < y:
                     a.append(literal)
                 else:
                     m += 1
-        v = abs(dl[p][0])
-        while not U[v-1]:
+        v = dl[p][0]
+        i_v = dl_help.index(v)
+        while not U[i_v]: 
             p = p - 1
-            v = abs(dl[p][0])
+            v = dl[p][0]
+            i_v = dl_help.index(v)
         if m == 1:
            a.append(-dl[p][0])
            return a
         else:
             p = p - 1
-        print(p)
         m = m - 1
-        el = dl[p+1][1]
+        el = dl[p][1]
+        while (el not in false_clause_list) and (p > 0):
+            p = p - 1
+            el = dl[p][1]
+        if p == 0:
+            return a
         i = formula.index(el)
         
         
@@ -97,9 +107,9 @@ def findY(dl, a):
     return 0
 
 def unassignVariables(dl, variables, y2):
-    new_dl = dl[:y2] + [dl[-1]]
+    new_dl = dl[:y2] + [dl[-1]] 
     for i in range(y2, len(dl) - 1):
-        variables[dl[i][0]] = None
+        variables[abs(dl[i][0])] = None
     return new_dl, variables
                         
 def solveSAT(prob):
@@ -110,14 +120,14 @@ def solveSAT(prob):
     dl = []
     free_variables = [k for k, v in variables.items() if v == None]
     while len(free_variables) != 0:
-        variables, new_true = bcp(prob)
+        variables, new_true = bcp((formula, variables))
         dl += new_true
         free_variables = [k for k, v in variables.items() if v == None]
-        false_clause, false_clause_exa = checkFalseClause(formula, variables)
+        false_clause, false_clause_list = checkFalseClause(formula, variables)
         if false_clause:
             if y == 0:
                 return False, variables
-            a = derivingConflictImplicates(formula, variables, dl, false_clause_exa)
+            a = derivingConflictImplicates(formula, variables, dl, false_clause_list)
             formula.append(a)
             if len(a) == 1:
                 y2 = 0
@@ -128,9 +138,10 @@ def solveSAT(prob):
             if len(free_variables) == 0:
                 return True, variables
             y += 1
-            p = free_variables[0]
+            p = free_variables[int(uniform(0, len(free_variables)))]
             variables[p] = True
-            #dl.append((p, None))
+            #formula.append([p])
+            dl.append((p, [p])) 
             continue
     return True, variables
                         
