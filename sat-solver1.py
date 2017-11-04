@@ -7,14 +7,14 @@ from boolean import *
 
 #input_doc = sys.argv[1]
 #output_doc = sys.argv[2]
-
-
+    
+    
 def simplify(prob):
     formula, variables = prob
-    i=0
+    i = 0
     while i<len(formula):
         if  len(formula[i])==1:
-            k=formula[i][0] 
+            k = formula[i][0] 
             if k > 0:
                 variables[abs(k)] = True
             else:

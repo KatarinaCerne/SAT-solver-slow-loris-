@@ -128,12 +128,13 @@ def solveSAT(prob):
             if y == 0:
                 return False, variables
             a = derivingConflictImplicates(formula, variables, dl, false_clause_list)
-            formula.append(a)
+            formula = [a] + formula
             if len(a) == 1:
                 y2 = 0
             else:
                 y2 = findY(dl, a)
             dl, variables = unassignVariables(dl, variables, y2)
+            free_variables = [k for k, v in variables.items() if v == None]
         else:
             if len(free_variables) == 0:
                 return True, variables
@@ -141,8 +142,10 @@ def solveSAT(prob):
             p = free_variables[int(uniform(0, len(free_variables)))]
             variables[p] = True
             #formula.append([p])
-            dl.append((p, [p])) 
+            dl.append((p, [p]))
+            free_variables = [k for k, v in variables.items() if v == None]
             continue
+        print(len(free_variables))
     return True, variables
                         
     
