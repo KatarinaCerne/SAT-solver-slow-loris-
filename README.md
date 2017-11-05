@@ -17,8 +17,8 @@ The code generates an output file "Outputfile.txt" which contains variables that
 If the solver doesn't find a satisfying valuation, the output file will contain only 0.
 
 ## Contents
-* "sat-solver1.py" contains the main functions for solving a SAT problem
-* "FormatSolution.py" contains some functions for converting problems like sudoku and k-colouring of a graph to dimasc format
-* the folder "Primeri" contains some files in dimacs format that were used for testing the SAT solver as well as the outputs the SAT solver generated and some official solutions to those problems
-* the folder "Viri" contains some literature
-* "sat-solver2.py" contains an alternative implementation of a SAT solver which is not yet complete
+* `sat-solver1.py` contains the main functions for solving a SAT problem
+* `FormatSolution.py` contains some functions for converting problems like sudoku and k-colouring of a graph to dimasc format
+* the folder `Primeri` contains some files in dimacs format that were used for testing the SAT solver as well as the outputs the SAT solver generated and some official solutions to those problems
+* the folder `Viri` contains some literature
+* `sat-solver2.py` contains an alternative implementation of a SAT solver which is not yet complete
