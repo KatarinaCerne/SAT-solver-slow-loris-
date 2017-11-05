@@ -47,6 +47,7 @@ def simplify(prob):
 
 def solveSAT_iter(prob):
     formula_old = []
+    poskus = []
     i = 0
     while True:
         i += 1
@@ -62,15 +63,25 @@ def solveSAT_iter(prob):
             return False, variables
         elif [] in formula:
             sat, var = False, variables
+
+            if -p in poskus:
+                return False, variables
+            
             copy_form = formula_old[:]
             copy_var = dict(variables)
             copy_form.append([-p])
+            
+            poskus.append(-p)
+            
             prob = (copy_form, copy_var)
             continue
         else:
             flat_formula = [abs(item) for sublist in formula for item in sublist]
             pojavitve = Counter(flat_formula)
             p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
+            
+            poskus.append(p)
+            
             copy_form = formula[:]
             copy_var = dict(variables)
             formula_old = copy_form[:]
