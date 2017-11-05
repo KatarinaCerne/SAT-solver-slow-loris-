@@ -90,9 +90,6 @@ def solveSAT_iter(prob):
 
 def solveSAT(prob):
     prob = simplify(prob)
-
- 
-
     formula, variables = prob
     if formula == []:
         return True, variables
