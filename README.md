@@ -17,7 +17,7 @@ The code generates an output file "Outputfile.txt" which contains variables that
 If the solver doesn't find a satisfying valuation, the output file will contain only 0.
 
 ## Representing example
-We believe that example [Barvanje50-input.txt](Primeri/Barvanje50-input.txt) (50-colouring of a complete graph on 50 vertices) demonstrates the strengths of our solver.
+We believe that example [Graf50-input.txt](Primeri/Graf50-input.txt) (50-colouring of a complete graph on 50 vertices) demonstrates the strengths of our solver.
 
 ## Contents
 * `sat-solver1.py` contains the main functions for solving a SAT problem
