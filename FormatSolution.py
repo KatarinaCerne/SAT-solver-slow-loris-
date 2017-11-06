@@ -59,7 +59,7 @@ def graphColouring2SATdimacs(G, k, file):
     file.close()
     #return And(*conj)
 
-def sodoku2SATdimacs(N, con, file, file_slovar):
+def sodoku2SATdimacs(N, con, file):
     conj = []
     slovar = dict()
     clauses = []
@@ -72,10 +72,6 @@ def sodoku2SATdimacs(N, con, file, file_slovar):
                 a += 1
     z = int(math.sqrt(N))
     mini_sq = []
-
-    file_slovar = open(file_slovar, "w")
-    file_slovar.write(str(slovar))
-    file_slovar.close()
     
     for i in range(z):
         for j in range(z):
