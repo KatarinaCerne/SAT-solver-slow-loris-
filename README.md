@@ -16,6 +16,9 @@ Repository contains files for Logic in computer science homework, which was to i
 The code generates an output file "Outputfile.txt" which contains variables that should be set to True for a valuation to be satisfying.
 If the solver doesn't find a satisfying valuation, the output file will contain only 0.
 
+## Representing example
+We believe that example [Barvanje50-input.txt](Primeri/Barvanje50-input.txt) (50-colouring of a complete graph on 50 vertices) demonstrates the strengths of our solver.
+
 ## Contents
 * `sat-solver1.py` contains the main functions for solving a SAT problem
 * `FormatSolution.py` contains some functions for converting problems like sudoku and k-colouring of a graph to dimasc format
