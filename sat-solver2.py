@@ -145,7 +145,7 @@ def solveSAT(prob):
             dl.append((p, [p]))
             free_variables = [k for k, v in variables.items() if v == None]
             continue
-        print(len(free_variables))
+        #print(len(free_variables))
     return True, variables
                         
     

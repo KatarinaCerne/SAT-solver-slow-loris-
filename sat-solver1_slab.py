@@ -2,7 +2,6 @@ import sys
 import ast
 import time
 from collections import Counter
-from copy import deepcopy
 
 from boolean import *
 
@@ -46,12 +45,52 @@ def simplify(prob):
         prob = formula, variables
     return prob
 
+def solveSAT_iter(prob):
+    formula_old = []
+    poskus = []
+    i = 0
+    while True:
+        i += 1
+        if i > 10000000:
+            return False, variables
+        
+        prob = simplify(prob)
+        formula, variables = prob
+        formula_old = formula
+        if formula == []:
+            return True, variables
+        elif [] in formula and len(formula) == 1:
+            return False, variables
+        elif [] in formula:
+            sat, var = False, variables
+
+            if -p in poskus:
+                return False, variables
+            
+            copy_form = formula_old[:]
+            copy_var = dict(variables)
+            copy_form.append([-p])
+            
+            poskus.append(-p)
+            
+            prob = (copy_form, copy_var)
+            continue
+        else:
+            flat_formula = [abs(item) for sublist in formula for item in sublist]
+            pojavitve = Counter(flat_formula)
+            p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
+            
+            poskus.append(p)
+            
+            copy_form = formula[:]
+            copy_var = dict(variables)
+            formula_old = copy_form[:]
+            copy_form.append([p])
+            prob = (copy_form, copy_var)
 
 def solveSAT(prob):
     prob = simplify(prob)
- 
     formula, variables = prob
-    
     if formula == []:
         return True, variables
     elif [] in formula:
@@ -61,44 +100,19 @@ def solveSAT(prob):
         pojavitve = Counter(flat_formula)
 
         p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
-
-
-        level = 0
-        states = dict()
-
-        states[level] = [formula, variables, pojavitve, p]
-        while True:
-            for_n, var_n, poj_n, p_n = states[level]
-            
-            copy_form = deepcopy(for_n)
-            copy_var = dict(var_n)
-            copy_poj = dict(poj_n)
-
-            copy_form.append([p_n])
-
-            copy_form, copy_var = simplify((copy_form, copy_var))
-            copy_flat_form = [abs(item) for sublist in copy_form for item in sublist]
-            copy_poj = Counter(copy_flat_form)
-
-            if copy_form == []:
-                return True, copy_var
-            elif [] in copy_form:
-                if p_n > 0:
-                    states[level][3] = -p_n
-                else:
-                    if level > 0:
-                        level -= 1
-                        while states[level][3] < 0:
-                            if level == 0:
-                                return False, copy_var
-                            level -= 1
-                        states[level][3] = -states[level][3]
-                    else:
-                        return False, copy_var
-            else:
-                level += 1
-                p = [k for k, v in copy_poj.items() if v == max(copy_poj.values())][0]
-                states[level] = [copy_form, copy_var, copy_poj, p]
+       
+        copy_form = formula[:]
+        copy_var = dict(variables)
+        copy_form.append([p])
+        sat, var = solveSAT((copy_form, copy_var))
+        if sat:
+            return sat, var
+        else:
+            copy_form = formula[:]
+            copy_var = dict(variables)
+            copy_form.append([-p])
+            sat, var = solveSAT((copy_form, copy_var))
+            return sat, var
 
 def readDimacs(file):
     formula = []
@@ -148,8 +162,7 @@ def main(input_file, output_file):
     file = open(output_file,"w")
     if sat:
         formatted_output = formatOutput(var)
-        file.write(str(formatted_output))
-        #file.write(str(var))
+        file.write(str(formatted_output)) 
         s = checkOutput(formula_copy, var) 
     else:
         file.write("0")
