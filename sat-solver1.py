@@ -48,9 +48,10 @@ def simplify(prob):
 
 
 def solveSAT(prob):
-    prob = simplify(prob)
- 
+    prob = simplify(prob) 
     formula, variables = prob
+    states = {}
+    st = 0
     
     if formula == []:
         return True, variables
@@ -61,44 +62,45 @@ def solveSAT(prob):
         pojavitve = Counter(flat_formula)
 
         p = [k for k, v in pojavitve.items() if v == max(pojavitve.values())][0]
-
-
-        level = 0
-        states = dict()
-
-        states[level] = [formula, variables, pojavitve, p]
+        
+        states[st] = [formula, variables, p]
         while True:
-            for_n, var_n, poj_n, p_n = states[level]
+            for_n, var_n, p_n = states[st]
             
             copy_form = deepcopy(for_n)
             copy_var = dict(var_n)
-            copy_poj = dict(poj_n)
+            #copy_poj = dict(poj_n)
 
             copy_form.append([p_n])
-
             copy_form, copy_var = simplify((copy_form, copy_var))
-            copy_flat_form = [abs(item) for sublist in copy_form for item in sublist]
-            copy_poj = Counter(copy_flat_form)
 
             if copy_form == []:
                 return True, copy_var
             elif [] in copy_form:
-                if p_n > 0:
-                    states[level][3] = -p_n
-                else:
-                    if level > 0:
-                        level -= 1
-                        while states[level][3] < 0:
-                            if level == 0:
-                                return False, copy_var
-                            level -= 1
-                        states[level][3] = -states[level][3]
-                    else:
+                if st == 0:
+                    if states[st][2]>0:
+                        states[st][2] = -p_n
+                    elif states[st][2]<0:
                         return False, copy_var
+                elif st > 0:
+                    if states[st][2]>0:
+                        states[st][2] = -p_n
+                    elif states[st][2]<0:
+                        while states[st][2]<0:
+                            if st == 0:
+                                return False, states[st][1]
+                            else:
+                                st-=1
+                        states[st][2] = -states[st][2]
             else:
-                level += 1
+                st += 1
+                                           
+                copy_flat_form = [abs(item) for sublist in copy_form for item in sublist]
+                copy_poj = Counter(copy_flat_form)
+                                           
                 p = [k for k, v in copy_poj.items() if v == max(copy_poj.values())][0]
-                states[level] = [copy_form, copy_var, copy_poj, p]
+                                           
+                states[st] = [copy_form, copy_var, p]
 
 def readDimacs(file):
     formula = []
@@ -150,10 +152,10 @@ def main(input_file, output_file):
         formatted_output = formatOutput(var)
         file.write(str(formatted_output))
         #file.write(str(var))
-        s = checkOutput(formula_copy, var) 
+        s = checkOutput(formula_copy, var)
     else:
         file.write("0")
-        s = ""
+        s = checkOutput(formula_copy, var)
     file.close()
     return "Finished " + str(s) + " " + str(time.time()-start_time)
     
